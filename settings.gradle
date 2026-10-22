@@ -1,0 +1,33 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+rootProject.name = "RenoTube"
+
+include ':app'
+include ':mediaserviceinterfaces'
+include ':youtubeapi'
+include ':sharedutils'
+include ':commons-io-2.8.0'
+include ':j2v8'
+include ':sharedtests'
+
+project(':mediaserviceinterfaces').projectDir = new File(rootDir, 'core/mediaserviceinterfaces')
+project(':youtubeapi').projectDir = new File(rootDir, 'core/youtubeapi')
+project(':sharedutils').projectDir = new File(rootDir, 'core/SharedModules/sharedutils')
+project(':commons-io-2.8.0').projectDir = new File(rootDir, 'core/SharedModules/commons-io-2.8.0')
+project(':j2v8').projectDir = new File(rootDir, 'core/SharedModules/j2v8')
+project(':sharedtests').projectDir = new File(rootDir, 'core/SharedModules/sharedtests')

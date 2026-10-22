@@ -1,0 +1,151 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+}
+
+android {
+    namespace 'com.renotube.tv'
+    compileSdk rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.renotube.tv"
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+
+        missingDimensionStrategy 'default', 'stbeta'
+
+        // Target ARM architectures for Sony BRAVIA and Android TV devices
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a'
+            universalApk true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+            // Also constrain debug ABI to ARM to keep builds fast and compact
+            ndk {
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+        freeCompilerArgs += [
+            "-opt-in=androidx.tv.material3.ExperimentalTvMaterial3Api",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
+        ]
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.5.8"
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                '/META-INF/{AL2.0,LGPL2.1}',
+                '/META-INF/*.version',
+                '/META-INF/*.kotlin_module',
+                '/META-INF/DEPENDENCIES',
+                '/META-INF/NOTICE',
+                '/META-INF/LICENSE',
+                '/META-INF/LICENSE.txt',
+                '/META-INF/NOTICE.txt'
+            ]
+        }
+        jniLibs {
+            keepDebugSymbols = []
+        }
+    }
+}
+
+dependencies {
+    // SmartTube core backend modules
+    implementation project(':mediaserviceinterfaces')
+    implementation project(':youtubeapi')
+    implementation project(':sharedutils')
+
+    // AndroidX & TV Leanback
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.activity:activity-compose:1.8.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0'
+
+    // Jetpack Compose & TV Material
+    implementation platform("androidx.compose:compose-bom:$rootProject.ext.composeBomVersion")
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material:material-icons-extended'
+
+    // TV Compose Leanback Library
+    implementation 'androidx.tv:tv-foundation:1.0.0-alpha10'
+    implementation 'androidx.tv:tv-material:1.0.0-alpha10'
+
+    // Media3 / ExoPlayer (DASH, HLS, SmoothStreaming, UI)
+    implementation "androidx.media3:media3-exoplayer:$rootProject.ext.media3Version"
+    implementation "androidx.media3:media3-exoplayer-dash:$rootProject.ext.media3Version"
+    implementation "androidx.media3:media3-exoplayer-hls:$rootProject.ext.media3Version"
+    implementation "androidx.media3:media3-ui:$rootProject.ext.media3Version"
+
+    // Image loading for TV (Coil)
+    implementation "io.coil-kt:coil-compose:$rootProject.ext.coilVersion"
+
+    // Hilt Dependency Injection
+    implementation "com.google.dagger:hilt-android:$rootProject.ext.hiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$rootProject.ext.hiltVersion"
+
+    // Reactive streams (SmartTube interop)
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidVersion"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.7.3'
+
+    // Retrofit & Network
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
+    implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
+
+    // QR Code generation for Web Remote & TV Sign-In
+    implementation 'com.google.zxing:core:3.5.3'
+
+    // Debugging tools
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}

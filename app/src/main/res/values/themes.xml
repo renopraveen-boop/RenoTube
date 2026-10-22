@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.RenoTube.Leanback" parent="android:Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@color/youtube_black</item>
+        <item name="android:colorBackground">@color/youtube_black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowOverscan">true</item>
+    </style>
+</resources>

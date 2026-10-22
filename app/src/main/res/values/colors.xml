@@ -1,0 +1,9 @@
+<resources>
+    <color name="youtube_black">#0F0F0F</color>
+    <color name="youtube_surface">#212121</color>
+    <color name="youtube_surface_focused">#282828</color>
+    <color name="youtube_red">#FF0000</color>
+    <color name="youtube_white">#FFFFFF</color>
+    <color name="youtube_gray">#AAAAAA</color>
+    <color name="youtube_divider">#3D3D3D</color>
+</resources>

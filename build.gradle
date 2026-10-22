@@ -1,0 +1,109 @@
+buildscript {
+    ext {
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        minSdkVersion = 21
+        buildToolsVersion = "34.0.0"
+
+        kotlinVersion = '1.9.22'
+        hiltVersion = '2.51'
+        composeBomVersion = '2024.02.00'
+        media3Version = '1.2.1'
+        retrofitVersion = '2.9.0'
+        gsonVersion = '2.10.1'
+        rxJavaVersion = '2.2.21'
+        rxAndroidVersion = '2.1.1'
+        coilVersion = '2.5.0'
+        
+        // SmartTube core dependency versions
+        jsonPathVersion = '2.9.0'
+        cronetOkHttpVersion = '0.1.0'
+        cronetApiVersion = '119.6045.31'
+        annotationXVersion = '1.7.1'
+        kotlinCoreXVersion = '1.12.0'
+        florianingerlRegexVersion = '1.1.11'
+        webkitVersion = '1.10.0'
+        nanojsonVersion = '1.2'
+        j2v8Version = '6.2.1'
+        junitVersion = '4.13.2'
+        robolectricVersion = '4.11.1'
+        retromockVersion = '1.1.1'
+        testXSupportVersion = '1.5.0'
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+    }
+}
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'com.squareup.okhttp3:okhttp:3.12.13'
+            force 'com.squareup.okhttp3:logging-interceptor:3.12.13'
+        }
+    }
+
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                compileSdkVersion rootProject.ext.compileSdkVersion
+                buildToolsVersion rootProject.ext.buildToolsVersion
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+
+                buildFeatures {
+                    buildConfig = true
+                }
+
+                if (project.plugins.hasPlugin('kotlin-android')) {
+                    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                        kotlinOptions {
+                            jvmTarget = "17"
+                        }
+                    }
+                }
+
+                if (namespace == null) {
+                    switch (project.name) {
+                        case 'mediaserviceinterfaces':
+                            namespace = 'com.liskovsoft.mediaserviceinterfaces'
+                            break
+                        case 'youtubeapi':
+                            namespace = 'com.liskovsoft.youtubeapi'
+                            break
+                        case 'sharedutils':
+                            namespace = 'com.liskovsoft.sharedutils'
+                            break
+                        case 'commons-io-2.8.0':
+                            namespace = 'org.apache.commons.commonsio'
+                            break
+                        case 'j2v8':
+                            namespace = 'com.eclipsesource.v8'
+                            break
+                        case 'sharedtests':
+                            namespace = 'com.liskovsoft.sharedtests'
+                            break
+                        case 'appupdatechecker2':
+                            namespace = 'com.liskovsoft.appupdatechecker2'
+                            break
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}
